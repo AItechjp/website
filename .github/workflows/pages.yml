@@ -1,0 +1,77 @@
+name: Deploy Web Desk
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Validate JavaScript
+        run: |
+          set -euo pipefail
+          for file in rss/rss.js calculator/calculator.js clock/clock.js todo/todo.js; do
+            node --check "$file"
+          done
+      - name: Validate internal links
+        run: |
+          python3 - <<'PY'
+          from html.parser import HTMLParser
+          from pathlib import Path
+          root = Path('.')
+          missing = []
+          class P(HTMLParser):
+              def __init__(self, page):
+                  super().__init__(); self.page = page
+              def handle_starttag(self, tag, attrs):
+                  d = dict(attrs)
+                  for key in ('href','src'):
+                      v = d.get(key,'')
+                      if not v or v.startswith(('#','http:','https:','mailto:','data:','javascript:')): continue
+                      path = (self.page.parent / v.split('#')[0].split('?')[0]).resolve()
+                      if v.endswith('/'): path = path / 'index.html'
+                      if not path.exists(): missing.append((str(self.page), v))
+          for page in root.rglob('*.html'):
+              P(page).feed(page.read_text(encoding='utf-8'))
+          if missing:
+              raise SystemExit('Missing internal assets: ' + repr(missing))
+          print('Internal links OK')
+          PY
+      - name: Smoke test RSS backend
+        run: |
+          set -euo pipefail
+          body="$(curl --retry 2 --retry-delay 2 --max-time 35 -fsS 'https://dcvtubivtextycifngtk.supabase.co/functions/v1/security-rss')"
+          echo "$body" | jq -e '.ok == true and .retentionHours == 8 and (.sources | length >= 4) and (.items | type == "array")' >/dev/null
+          echo "RSS backend OK: $(echo "$body" | jq '.items | length') active items"
+
+  deploy:
+    needs: verify
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+      - name: Upload site artifact
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: '.'
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
