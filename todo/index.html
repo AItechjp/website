@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#07111a">
+  <meta name="description" content="端末内だけに保存する、軽量で使いやすいTodoリスト。">
+  <title>Todo — Web Desk</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+  <div class="shell">
+    <header class="topbar">
+      <a class="brand" href="../"><span class="brand-mark">WD</span><span>WEB DESK</span></a>
+      <nav class="nav-actions"><a class="back-link" href="../">← ポータル</a></nav>
+    </header>
+
+    <main>
+      <section class="page-head">
+        <div>
+          <div class="eyebrow">LOCAL FIRST · PRIVATE</div>
+          <h1>Todo</h1>
+          <p>タスクはこの端末のブラウザ内だけに保存。サーバへの送信、アカウント登録、トラッキングはありません。</p>
+        </div>
+      </section>
+
+      <section class="stats" aria-label="Todo統計">
+        <article class="stat"><span>すべて</span><strong id="statTotal">0</strong><small>tasks</small></article>
+        <article class="stat"><span>未完了</span><strong id="statOpen">0</strong><small>open</small></article>
+        <article class="stat"><span>今日まで</span><strong id="statToday">0</strong><small>due</small></article>
+        <article class="stat"><span>完了</span><strong id="statDone">0</strong><small>done</small></article>
+      </section>
+
+      <div class="todo-layout">
+        <aside class="panel" style="padding:18px;position:sticky;top:18px">
+          <div class="section-title"><div><span class="kicker">NEW TASK</span><h2>タスクを追加</h2></div></div>
+          <form id="todoForm" class="todo-form" autocomplete="off">
+            <label class="field"><span>タイトル</span><input id="todoTitle" maxlength="120" required placeholder="例：月次レポートを確認"></label>
+            <label class="field"><span>メモ</span><textarea id="todoNote" maxlength="1000" rows="4" placeholder="補足やURLなど"></textarea></label>
+            <div class="form-grid">
+              <label class="field"><span>カテゴリ</span><input id="todoCategory" maxlength="30" placeholder="仕事 / 個人"></label>
+              <label class="field"><span>優先度</span><select id="todoPriority"><option value="medium">中</option><option value="high">高</option><option value="low">低</option></select></label>
+            </div>
+            <label class="field"><span>期限</span><input id="todoDue" type="datetime-local"></label>
+            <button class="primary-btn" type="submit">＋ タスクを追加</button>
+          </form>
+          <div class="divider"></div>
+          <div class="tool-buttons" style="justify-content:flex-start">
+            <button id="exportBtn" class="ghost-btn" type="button">JSON出力</button>
+            <label class="ghost-btn" style="cursor:pointer">JSON読込<input id="importInput" type="file" accept="application/json,.json" hidden></label>
+            <button id="clearDoneBtn" class="ghost-btn" type="button">完了を削除</button>
+          </div>
+          <p class="microcopy">バックアップ用JSONにもタスク内容が含まれます。共有時は内容に注意してください。</p>
+        </aside>
+
+        <section class="panel" style="padding:18px">
+          <div class="section-title">
+            <div><span class="kicker">TASKS</span><h2>マイタスク</h2></div>
+            <div class="toolbar"><label class="searchbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><input id="todoSearch" type="search" placeholder="タスクを検索"></label></div>
+          </div>
+          <div id="filterTabs" class="filter-tabs" role="tablist" aria-label="絞り込み">
+            <button class="seg-btn active" data-filter="all" type="button">すべて</button>
+            <button class="seg-btn" data-filter="active" type="button">未完了</button>
+            <button class="seg-btn" data-filter="today" type="button">今日</button>
+            <button class="seg-btn" data-filter="overdue" type="button">期限切れ</button>
+            <button class="seg-btn" data-filter="done" type="button">完了</button>
+          </div>
+          <div id="todoList" class="todo-list"></div>
+          <div id="todoEmpty" class="empty" hidden>条件に一致するタスクはありません。</div>
+        </section>
+      </div>
+    </main>
+    <footer class="footer"><span>Todo data stays in localStorage on this browser.</span><span>WEB DESK</span></footer>
+  </div>
+
+  <dialog id="editDialog">
+    <form id="editForm" class="dialog-body" method="dialog">
+      <div class="section-title"><div><span class="kicker">EDIT</span><h2>タスクを編集</h2></div></div>
+      <input id="editId" type="hidden">
+      <div class="todo-form">
+        <label class="field"><span>タイトル</span><input id="editTitle" maxlength="120" required></label>
+        <label class="field"><span>メモ</span><textarea id="editNote" maxlength="1000" rows="4"></textarea></label>
+        <div class="form-grid">
+          <label class="field"><span>カテゴリ</span><input id="editCategory" maxlength="30"></label>
+          <label class="field"><span>優先度</span><select id="editPriority"><option value="medium">中</option><option value="high">高</option><option value="low">低</option></select></label>
+        </div>
+        <label class="field"><span>期限</span><input id="editDue" type="datetime-local"></label>
+      </div>
+      <div class="dialog-actions"><button id="cancelEdit" class="ghost-btn" type="button">キャンセル</button><button class="primary-btn" type="submit">保存</button></div>
+    </form>
+  </dialog>
+
+  <script src="todo.js" defer></script>
+</body>
+</html>
