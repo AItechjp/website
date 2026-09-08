@@ -7,6 +7,7 @@
   <meta name="description" content="端末内だけに保存する、軽量で使いやすいTodoリスト。">
   <title>Todo — Web Desk</title>
   <link rel="stylesheet" href="../assets/styles.css">
+  <link rel="stylesheet" href="todo.css">
 </head>
 <body>
   <div class="shell">
@@ -15,81 +16,103 @@
       <nav class="nav-actions"><a class="back-link" href="../">← ポータル</a></nav>
     </header>
 
-    <main>
-      <section class="page-head">
+    <main class="todo-page">
+      <section class="page-head todo-page-head">
         <div>
           <div class="eyebrow">LOCAL FIRST · PRIVATE</div>
           <h1>Todo</h1>
-          <p>タスクはこの端末のブラウザ内だけに保存。サーバへの送信、アカウント登録、トラッキングはありません。</p>
+          <p>やることを、迷わず追加・整理・完了。内容はこのブラウザの中だけに保存されます。</p>
         </div>
+        <div class="todo-save-state" id="saveState" aria-live="polite"><span class="save-dot"></span><span>この端末に保存</span></div>
       </section>
 
-      <section class="stats" aria-label="Todo統計">
+      <section class="stats todo-stats" aria-label="Todo統計">
         <article class="stat"><span>すべて</span><strong id="statTotal">0</strong><small>tasks</small></article>
         <article class="stat"><span>未完了</span><strong id="statOpen">0</strong><small>open</small></article>
-        <article class="stat"><span>今日まで</span><strong id="statToday">0</strong><small>due</small></article>
+        <article class="stat"><span>今日</span><strong id="statToday">0</strong><small>due today</small></article>
         <article class="stat"><span>完了</span><strong id="statDone">0</strong><small>done</small></article>
       </section>
 
-      <div class="todo-layout">
-        <aside class="panel" style="padding:18px;position:sticky;top:18px">
-          <div class="section-title"><div><span class="kicker">NEW TASK</span><h2>タスクを追加</h2></div></div>
-          <form id="todoForm" class="todo-form" autocomplete="off">
-            <label class="field"><span>タイトル</span><input id="todoTitle" maxlength="120" required placeholder="例：月次レポートを確認"></label>
-            <label class="field"><span>メモ</span><textarea id="todoNote" maxlength="1000" rows="4" placeholder="補足やURLなど"></textarea></label>
-            <div class="form-grid">
-              <label class="field"><span>カテゴリ</span><input id="todoCategory" maxlength="30" placeholder="仕事 / 個人"></label>
-              <label class="field"><span>優先度</span><select id="todoPriority"><option value="medium">中</option><option value="high">高</option><option value="low">低</option></select></label>
+      <section class="todo-quick panel" aria-labelledby="quickAddTitle">
+        <form id="todoForm" class="quick-add" autocomplete="off">
+          <div class="quick-main">
+            <label class="sr-only" for="todoTitle" id="quickAddTitle">新しいタスク</label>
+            <input id="todoTitle" maxlength="120" required placeholder="やることを入力…" enterkeyhint="done">
+            <button class="primary-btn quick-submit" type="submit">追加</button>
+          </div>
+          <details class="task-options" id="taskOptions">
+            <summary>詳細を追加 <span>期限・優先度・カテゴリ・メモ</span></summary>
+            <div class="task-options-body">
+              <div class="form-grid todo-form-grid">
+                <label class="field"><span>期限</span><input id="todoDue" type="datetime-local"></label>
+                <label class="field"><span>優先度</span><select id="todoPriority"><option value="medium">中</option><option value="high">高</option><option value="low">低</option></select></label>
+              </div>
+              <label class="field"><span>カテゴリ</span><input id="todoCategory" maxlength="30" placeholder="仕事 / 個人 / 買い物"></label>
+              <label class="field"><span>メモ</span><textarea id="todoNote" maxlength="1000" rows="3" placeholder="補足やURLなど"></textarea></label>
             </div>
-            <label class="field"><span>期限</span><input id="todoDue" type="datetime-local"></label>
-            <button class="primary-btn" type="submit">＋ タスクを追加</button>
-          </form>
-          <div class="divider"></div>
-          <div class="tool-buttons" style="justify-content:flex-start">
-            <button id="exportBtn" class="ghost-btn" type="button">JSON出力</button>
-            <label class="ghost-btn" style="cursor:pointer">JSON読込<input id="importInput" type="file" accept="application/json,.json" hidden></label>
-            <button id="clearDoneBtn" class="ghost-btn" type="button">完了を削除</button>
-          </div>
-          <p class="microcopy">バックアップ用JSONにもタスク内容が含まれます。共有時は内容に注意してください。</p>
-        </aside>
+          </details>
+        </form>
+      </section>
 
-        <section class="panel" style="padding:18px">
-          <div class="section-title">
-            <div><span class="kicker">TASKS</span><h2>マイタスク</h2></div>
-            <div class="toolbar"><label class="searchbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><input id="todoSearch" type="search" placeholder="タスクを検索"></label></div>
+      <section class="panel todo-board">
+        <div class="todo-board-head">
+          <div><span class="kicker">MY TASKS</span><h2>タスク</h2></div>
+          <label class="searchbox todo-search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><input id="todoSearch" type="search" placeholder="検索"></label>
+        </div>
+
+        <div class="todo-control-row">
+          <div id="filterTabs" class="filter-tabs todo-filters" role="tablist" aria-label="絞り込み">
+            <button class="seg-btn active" data-filter="all" type="button" role="tab" aria-selected="true">すべて <span id="countAll">0</span></button>
+            <button class="seg-btn" data-filter="active" type="button" role="tab" aria-selected="false">未完了 <span id="countActive">0</span></button>
+            <button class="seg-btn" data-filter="today" type="button" role="tab" aria-selected="false">今日 <span id="countToday">0</span></button>
+            <button class="seg-btn" data-filter="overdue" type="button" role="tab" aria-selected="false">期限切れ <span id="countOverdue">0</span></button>
+            <button class="seg-btn" data-filter="done" type="button" role="tab" aria-selected="false">完了 <span id="countDone">0</span></button>
           </div>
-          <div id="filterTabs" class="filter-tabs" role="tablist" aria-label="絞り込み">
-            <button class="seg-btn active" data-filter="all" type="button">すべて</button>
-            <button class="seg-btn" data-filter="active" type="button">未完了</button>
-            <button class="seg-btn" data-filter="today" type="button">今日</button>
-            <button class="seg-btn" data-filter="overdue" type="button">期限切れ</button>
-            <button class="seg-btn" data-filter="done" type="button">完了</button>
-          </div>
-          <div id="todoList" class="todo-list"></div>
-          <div id="todoEmpty" class="empty" hidden>条件に一致するタスクはありません。</div>
-        </section>
-      </div>
+          <label class="todo-sort-label">並び順<select id="sortSelect" class="todo-sort"><option value="smart">おすすめ</option><option value="due">期限が近い順</option><option value="newest">新しい順</option><option value="oldest">古い順</option></select></label>
+        </div>
+
+        <div id="todoList" class="todo-list" aria-live="polite"></div>
+        <div id="todoEmpty" class="todo-empty" hidden>
+          <div class="todo-empty-icon" aria-hidden="true">✓</div>
+          <strong id="emptyTitle">タスクはありません</strong>
+          <span id="emptyText">上の入力欄から、最初のタスクを追加できます。</span>
+        </div>
+      </section>
+
+      <section class="todo-data-row" aria-label="Todoデータ操作">
+        <div><strong>データ管理</strong><p>TodoはこのブラウザのlocalStorageにだけ保存されます。</p></div>
+        <div class="tool-buttons todo-data-actions">
+          <button id="exportBtn" class="ghost-btn" type="button">JSON出力</button>
+          <label class="ghost-btn file-btn">JSON読込<input id="importInput" type="file" accept="application/json,.json" hidden></label>
+          <button id="clearDoneBtn" class="ghost-btn danger-soft" type="button">完了を削除</button>
+        </div>
+      </section>
     </main>
+
     <footer class="footer"><span>Todo data stays in localStorage on this browser.</span><span>WEB DESK</span></footer>
   </div>
 
-  <dialog id="editDialog">
-    <form id="editForm" class="dialog-body" method="dialog">
-      <div class="section-title"><div><span class="kicker">EDIT</span><h2>タスクを編集</h2></div></div>
+  <dialog id="editDialog" class="todo-dialog">
+    <form id="editForm" class="dialog-body" novalidate>
+      <div class="dialog-head">
+        <div><span class="kicker">EDIT TASK</span><h2>タスクを編集</h2></div>
+        <button id="closeEdit" class="dialog-close" type="button" aria-label="閉じる">×</button>
+      </div>
       <input id="editId" type="hidden">
-      <div class="todo-form">
+      <div class="todo-form edit-grid">
         <label class="field"><span>タイトル</span><input id="editTitle" maxlength="120" required></label>
         <label class="field"><span>メモ</span><textarea id="editNote" maxlength="1000" rows="4"></textarea></label>
-        <div class="form-grid">
-          <label class="field"><span>カテゴリ</span><input id="editCategory" maxlength="30"></label>
+        <div class="form-grid todo-form-grid">
+          <label class="field"><span>期限</span><input id="editDue" type="datetime-local"></label>
           <label class="field"><span>優先度</span><select id="editPriority"><option value="medium">中</option><option value="high">高</option><option value="low">低</option></select></label>
         </div>
-        <label class="field"><span>期限</span><input id="editDue" type="datetime-local"></label>
+        <label class="field"><span>カテゴリ</span><input id="editCategory" maxlength="30"></label>
       </div>
       <div class="dialog-actions"><button id="cancelEdit" class="ghost-btn" type="button">キャンセル</button><button class="primary-btn" type="submit">保存</button></div>
     </form>
   </dialog>
 
+  <div id="toast" class="todo-toast" role="status" aria-live="polite" aria-atomic="true"></div>
   <script src="todo.js" defer></script>
 </body>
 </html>
