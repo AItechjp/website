@@ -1,6 +1,6 @@
 # WEB DESK
 
-4つの軽量Webツールを1つにまとめた、GitHub Pages + Supabase構成のサイトです。
+6つの軽量Webツールを1つにまとめた、GitHub Pages + Supabase構成のサイトです。
 
 ## Tools
 
@@ -31,11 +31,30 @@
 - JSONバックアップ / 復元
 - タスクはブラウザの`localStorage`のみに保存し、サーバへ送信しない
 
+### 5. Music
+- Apple Music風のレスポンシブUI
+- 曲名 / アーティスト / アルバム検索
+- iTunes Search APIの30秒プレビューを再生
+- 再生 / 一時停止 / 前後曲 / シーク / 音量
+- Media Session対応ブラウザではOSのメディア操作と連携
+- お気に入りは`localStorage`に保存
+- フル楽曲の配信・保存・ダウンロードは行わない
+
+### 6. 破産統計マップ
+- 裁判所の公開司法統計だけを利用
+- 2020年の47都道府県別「破産事件新受」総数をヒートマップ化
+- 都道府県検索、地方絞り込み、全国順位、全国比を表示
+- 2020〜2024年の全国推移を表示
+- 個人名・住所・勤務先・官報掲載者の位置情報は収集・表示しない
+- 北海道は札幌 / 函館 / 旭川 / 釧路の4地裁を合算
+
 ## Architecture
 
 - Frontend: vanilla HTML / CSS / JavaScript
 - Hosting: GitHub Pages
 - RSS backend: Supabase Edge Functions + Postgres + pg_cron
+- Music catalog / previews: Apple iTunes Search API
+- Bankruptcy map data: 裁判所「司法統計年報 民事・行政編」の集計統計
 - No frontend framework, no analytics, no ad SDK, no external font dependency
 
 ## RSS endpoint
