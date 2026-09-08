@@ -56,9 +56,21 @@ jobs:
           body="$(curl --retry 2 --retry-delay 2 --max-time 35 -fsS 'https://dcvtubivtextycifngtk.supabase.co/functions/v1/security-rss')"
           echo "$body" | jq -e '.ok == true and .retentionHours == 8 and (.sources | length >= 4) and (.items | type == "array")' >/dev/null
           echo "RSS backend OK: $(echo "$body" | jq '.items | length') active items"
+      - name: Smoke test live Web Desk mirror
+        run: |
+          set -euo pipefail
+          base='https://dcvtubivtextycifngtk.supabase.co/functions/v1/web-desk'
+          curl --retry 2 --max-time 30 -fsSL "$base/" | grep -q 'WEB DESK'
+          curl --retry 2 --max-time 30 -fsSL "$base/rss/" | grep -q 'Security RSS'
+          curl --retry 2 --max-time 30 -fsSL "$base/calculator/" | grep -q 'Calculator'
+          curl --retry 2 --max-time 30 -fsSL "$base/clock/" | grep -q 'Clock'
+          curl --retry 2 --max-time 30 -fsSL "$base/todo/" | grep -q 'Todo'
+          echo 'Live Web Desk mirror OK'
 
   deploy:
+    name: Deploy to GitHub Pages when enabled
     needs: verify
+    continue-on-error: true
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
