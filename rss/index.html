@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#071018">
+  <title>Security RSS — WEB DESK</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+  <main class="shell">
+    <header class="topbar">
+      <a class="brand" href="../"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 5a14 14 0 0 1 14 14"/><path d="M5 10a9 9 0 0 1 9 9"/><circle cx="6" cy="18" r="1.5"/></svg></span><span>Security RSS</span></a>
+      <div class="nav-actions"><a class="back-link" href="../">← Home</a></div>
+    </header>
+
+    <section class="hero">
+      <div class="eyebrow">8-hour security window</div>
+      <h1>いま8時間の、<br>セキュリティ情報。</h1>
+      <p class="lead">公的機関と主要セキュリティメディアのRSSを集約。公開時刻から8時間を過ぎた記事は表示対象から外れ、バックエンドでも自動削除されます。</p>
+    </section>
+
+    <div class="stats">
+      <div class="stat"><strong id="stat-count">—</strong><span>8時間以内の記事</span></div>
+      <div class="stat"><strong id="stat-unread">—</strong><span>未読</span></div>
+      <div class="stat"><strong id="stat-sources">6</strong><span>監視ソース</span></div>
+      <div class="stat"><strong id="stat-refresh">—</strong><span>最終更新</span></div>
+    </div>
+
+    <div class="rss-layout">
+      <section class="panel panel-pad">
+        <div class="section-title">
+          <div><h2>Live feed</h2><p id="feed-status">接続しています…</p></div>
+          <button class="primary-btn" id="refresh-btn" type="button">更新</button>
+        </div>
+        <div class="toolbar">
+          <label class="searchbox" aria-label="記事を検索">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+            <input id="search" type="search" placeholder="CVE、製品名、キーワード…" autocomplete="off">
+          </label>
+          <button class="ghost-btn" id="unread-toggle" type="button">未読のみ</button>
+        </div>
+        <div class="chips" id="source-chips" style="margin:12px 0 16px"></div>
+        <div class="feed-list" id="feed-list" aria-live="polite"></div>
+        <div class="empty hidden" id="empty-state">条件に一致する記事はありません。</div>
+      </section>
+
+      <aside class="panel panel-pad">
+        <div class="section-title"><div><h3>Sources</h3><p>取得状態と直近チェック</p></div></div>
+        <div class="source-list" id="source-list"></div>
+        <div style="height:14px"></div>
+        <div class="small">保持ルール</div>
+        <p class="muted" style="font-size:.82rem;line-height:1.65;margin-bottom:0">記事本文は保存せず、タイトル・URL・短い概要・公開時刻のみ保持します。公開時刻 + 8時間で期限切れになり、Supabase側の定期削除でも消去されます。</p>
+      </aside>
+    </div>
+
+    <footer class="footer"><span>Security RSS / 8-hour retention</span><span id="generated-at">—</span></footer>
+  </main>
+  <script src="./rss.js" defer></script>
+</body>
+</html>
