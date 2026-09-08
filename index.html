@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#071018">
+  <meta name="description" content="Security RSS、電卓、時計、Todoをまとめた軽量Webツール集。">
+  <title>WEB DESK — 4 Tools</title>
+  <link rel="stylesheet" href="./assets/styles.css">
+</head>
+<body>
+  <main class="shell">
+    <header class="topbar">
+      <a class="brand" href="./" aria-label="WEB DESK home">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 5.5 12 2l8 3.5v5.8c0 5.1-3.4 8.7-8 10.7-4.6-2-8-5.6-8-10.7V5.5Z"/><path d="M8.5 12h7M12 8.5v7"/></svg>
+        </span>
+        <span>WEB DESK</span>
+      </a>
+      <div class="nav-actions"><span class="meta-pill">GitHub Pages + Supabase</span></div>
+    </header>
+
+    <section class="hero">
+      <div class="eyebrow">Personal utility suite</div>
+      <h1>毎日使う4つを、<br>ひとつのデスクに。</h1>
+      <p class="lead">情報セキュリティの最新RSS、関数電卓、世界時計、Todo。ログイン不要・軽量・スマホ対応。必要なものだけを素早く開ける個人用Webツール集です。</p>
+      <div class="hero-meta">
+        <span class="meta-pill">RSSは公開から8時間で自動削除</span>
+        <span class="meta-pill">Todoは端末内だけに保存</span>
+        <span class="meta-pill">外部広告・トラッカーなし</span>
+      </div>
+    </section>
+
+    <section class="grid portal-grid" aria-label="Tools">
+      <a class="tool-card" href="./rss/">
+        <div class="tool-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 5a14 14 0 0 1 14 14"/><path d="M5 10a9 9 0 0 1 9 9"/><circle cx="6" cy="18" r="1.5"/></svg></div>
+        <h2>Security RSS</h2>
+        <p>JPCERT/CC、IPA、CISAなどを集約。公開時刻から8時間だけ保持し、古い情報は自動削除。</p>
+        <div class="card-foot"><span>6 curated sources</span><span class="arrow">→</span></div>
+      </a>
+      <a class="tool-card" href="./calculator/">
+        <div class="tool-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="3" width="16" height="18" rx="3"/><path d="M7.5 7h9M8 12h.01M12 12h.01M16 12h.01M8 16h.01M12 16h.01M16 16h.01"/></svg></div>
+        <h2>Calculator</h2>
+        <p>標準計算から三角関数・対数まで。履歴を端末に残し、キーボードでも操作できます。</p>
+        <div class="card-foot"><span>Scientific + history</span><span class="arrow">→</span></div>
+      </a>
+      <a class="tool-card" href="./clock/">
+        <div class="tool-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg></div>
+        <h2>Clock</h2>
+        <p>現在時刻、世界時計、ストップウォッチ、タイマーを1画面に。作業中の常設表示にも。</p>
+        <div class="card-foot"><span>Tokyo / UTC / London / NY</span><span class="arrow">→</span></div>
+      </a>
+      <a class="tool-card" href="./todo/">
+        <div class="tool-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M8 6h12M8 12h12M8 18h12"/><path d="m3.5 6 1 1 2-2M3.5 12l1 1 2-2M3.5 18l1 1 2-2"/></svg></div>
+        <h2>Todo</h2>
+        <p>優先度・カテゴリ・期限・検索・フィルタ対応。データはブラウザ内だけに保存します。</p>
+        <div class="card-foot"><span>Local-first tasks</span><span class="arrow">→</span></div>
+      </a>
+    </section>
+
+    <footer class="footer"><span>WEB DESK / AItechjp</span><span>Static frontend. RSS backend on Supabase.</span></footer>
+  </main>
+</body>
+</html>
