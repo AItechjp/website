@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#071018">
+  <meta name="description" content="Supabase Freeプランの現在リソース使用量と無料枠残量を確認するWEB DESKダッシュボード。">
+  <title>Free Tier Monitor — WEB DESK</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+  <link rel="stylesheet" href="./resources.css">
+</head>
+<body>
+  <main class="shell resource-shell">
+    <header class="topbar">
+      <a class="brand" href="../" aria-label="WEB DESK home">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19V9M10 19V5M16 19v-8M22 19V3"/><path d="M2 19h22"/></svg>
+        </span>
+        <span>WEB DESK</span>
+      </a>
+      <div class="nav-actions">
+        <span class="meta-pill live-pill"><span class="status-dot ok"></span>1 min refresh</span>
+        <a class="back-link" href="../">← Home</a>
+      </div>
+    </header>
+
+    <section class="resource-hero">
+      <div>
+        <div class="eyebrow">Infrastructure / Free tier</div>
+        <h1>無料枠を、<br>使い切る前に。</h1>
+        <p class="lead">Supabase Freeプランの主要上限と、現在取得できるライブ使用量を1画面で監視します。DB集計値は1分ごとに更新されます。</p>
+      </div>
+      <div class="health-card panel">
+        <div class="health-head">
+          <span class="health-orb" id="healthOrb"></span>
+          <div><strong id="healthText">Connecting…</strong><span id="healthSub">Supabase snapshot</span></div>
+        </div>
+        <div class="health-time"><span>最終更新</span><strong id="lastUpdated">—</strong></div>
+        <button class="primary-btn" id="refreshBtn" type="button">今すぐ更新</button>
+      </div>
+    </section>
+
+    <section class="summary-strip panel" aria-label="Resource summary">
+      <div><span>Plan</span><strong>Supabase Free</strong></div>
+      <div><span>Project</span><strong>dcvt…ngtk</strong></div>
+      <div><span>Live metrics</span><strong id="liveCount">0 / 8</strong></div>
+      <div><span>更新間隔</span><strong>60 sec</strong></div>
+    </section>
+
+    <section class="resource-section">
+      <div class="section-heading">
+        <div><div class="eyebrow">Live now</div><h2>現在値を取得できるリソース</h2></div>
+        <span class="meta-pill">DB集計 / RLS read-only</span>
+      </div>
+      <div class="resource-grid" id="liveGrid">
+        <article class="resource-card panel" data-key="database">
+          <div class="resource-card-top"><span class="resource-icon">DB</span><span class="badge live">LIVE</span></div>
+          <h3>Database</h3>
+          <div class="metric"><strong id="dbValue">—</strong><span>/ 500 MB</span></div>
+          <div class="progress"><i id="dbBar"></i></div>
+          <div class="resource-foot"><span id="dbPercent">—</span><span id="dbRemain">— remaining</span></div>
+        </article>
+
+        <article class="resource-card panel" data-key="storage">
+          <div class="resource-card-top"><span class="resource-icon">ST</span><span class="badge live">LIVE</span></div>
+          <h3>File Storage</h3>
+          <div class="metric"><strong id="storageValue">—</strong><span>/ 1 GB</span></div>
+          <div class="progress"><i id="storageBar"></i></div>
+          <div class="resource-foot"><span id="storagePercent">—</span><span id="storageRemain">— remaining</span></div>
+        </article>
+
+        <article class="resource-card panel" data-key="mau">
+          <div class="resource-card-top"><span class="resource-icon">AU</span><span class="badge approx">LIVE*</span></div>
+          <h3>Auth activity</h3>
+          <div class="metric"><strong id="mauValue">—</strong><span>/ 50,000 MAU</span></div>
+          <div class="progress"><i id="mauBar"></i></div>
+          <div class="resource-foot"><span id="mauPercent">—</span><span>直近30日目安</span></div>
+        </article>
+
+        <article class="resource-card panel" data-key="rows">
+          <div class="resource-card-top"><span class="resource-icon">ROW</span><span class="badge live">LIVE</span></div>
+          <h3>Public rows</h3>
+          <div class="metric standalone"><strong id="rowsValue">—</strong><span>estimated rows</span></div>
+          <p class="resource-note">public schema全体の推定行数。無料枠の課金指標ではなく、DB増加の早期把握用です。</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="resource-section">
+      <div class="section-heading">
+        <div><div class="eyebrow">Quota reference</div><h2>無料枠上限</h2></div>
+        <span class="meta-pill">Billing meter API not connected</span>
+      </div>
+      <div class="quota-grid">
+        <article class="quota-card panel"><span class="badge quota">QUOTA</span><h3>Egress</h3><strong>5 GB</strong><p>Database / Auth / Storage / Functions / Realtimeから外部へ出る通信。</p></article>
+        <article class="quota-card panel"><span class="badge quota">QUOTA</span><h3>Cached egress</h3><strong>5 GB</strong><p>キャッシュ経由の転送枠。公式Billing meterとは分けて表示されます。</p></article>
+        <article class="quota-card panel"><span class="badge quota">QUOTA</span><h3>Edge Functions</h3><strong>500,000</strong><p>月間invocations。OPTIONSプリフライトは課金対象外。</p></article>
+        <article class="quota-card panel"><span class="badge quota">QUOTA</span><h3>Realtime messages</h3><strong>2,000,000</strong><p>Broadcast / Presence / Database Changesの月間メッセージ。</p></article>
+        <article class="quota-card panel"><span class="badge quota">QUOTA</span><h3>Realtime peak</h3><strong>200</strong><p>同時接続ピークの無料枠。</p></article>
+        <article class="quota-card panel"><span class="badge quota">QUOTA</span><h3>Active projects</h3><strong>2</strong><p>Free organizationで同時にアクティブにできるプロジェクト数。</p></article>
+      </div>
+      <div class="notice panel">
+        <div class="notice-icon">i</div>
+        <div><strong>「LIVE」と「請求メーター」は別物です</strong><p>Database / Storageは現在の実容量を表示します。StorageはGB-hours、MAU・Egress・Functions・Realtimeは請求期間ベースの公式メーターが別にあるため、このページでは取得できない項目を推測値で埋めません。</p></div>
+      </div>
+    </section>
+
+    <section class="resource-section two-col">
+      <div class="panel panel-pad">
+        <div class="section-title"><div><h3>System status</h3><p>このダッシュボード自身の状態</p></div></div>
+        <div class="status-list">
+          <div><span>Supabase project</span><strong><span class="status-dot ok"></span>ACTIVE</strong></div>
+          <div><span>Usage snapshot</span><strong id="snapshotStatus"><span class="status-dot"></span>WAITING</strong></div>
+          <div><span>Read policy</span><strong><span class="status-dot ok"></span>RLS / read-only</strong></div>
+          <div><span>Secrets in browser</span><strong><span class="status-dot ok"></span>NONE</strong></div>
+        </div>
+      </div>
+      <div class="panel panel-pad">
+        <div class="section-title"><div><h3>更新方式</h3><p>低コストで継続監視</p></div></div>
+        <div class="flow">
+          <span>Postgres</span><b>→</b><span>pg_cron / 1min</span><b>→</b><span>aggregate row</span><b>→</b><span>Browser</span>
+        </div>
+        <p class="resource-note">公開されるのは容量・件数などの集計値だけです。テーブル内容、ユーザー情報、service role keyは公開しません。</p>
+      </div>
+    </section>
+
+    <footer class="footer"><span>WEB DESK / Free Tier Monitor</span><span>Supabase Free quotas checked September 2026.</span></footer>
+  </main>
+  <script src="./resources.js"></script>
+</body>
+</html>
