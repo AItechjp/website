@@ -1,6 +1,6 @@
 # WEB DESK
 
-6つの軽量Webツールを1つにまとめた、GitHub Pages + Supabase構成のサイトです。
+7つの軽量Webツールを1つにまとめた、GitHub Pages + Supabase構成のサイトです。
 
 ## Tools
 
@@ -48,11 +48,19 @@
 - 個人名・住所・勤務先・官報掲載者の位置情報は収集・表示しない
 - 北海道は札幌 / 函館 / 旭川 / 釧路の4地裁を合算
 
+### 7. Free Tier Monitor
+- Supabase Freeプランの主要無料枠を1画面で確認
+- Database / File Storage / Auth activity / public rowsを1分ごとに更新
+- `pg_cron`が公開用の集計1行だけを更新し、RLSで匿名SELECTのみ許可
+- service role keyやユーザー情報、テーブル内容はブラウザへ公開しない
+- Egress / Edge Function Invocations / Realtimeなど公式Billing meterが必要な項目は、推測せず無料枠上限だけ表示
+
 ## Architecture
 
 - Frontend: vanilla HTML / CSS / JavaScript
 - Hosting: GitHub Pages
 - RSS backend: Supabase Edge Functions + Postgres + pg_cron
+- Free tier monitor: Supabase Postgres aggregate row + pg_cron + RLS
 - Music catalog / previews: Apple iTunes Search API
 - Bankruptcy map data: 裁判所「司法統計年報 民事・行政編」の集計統計
 - No frontend framework, no analytics, no ad SDK, no external font dependency
