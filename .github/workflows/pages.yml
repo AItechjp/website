@@ -23,7 +23,7 @@ jobs:
       - name: Validate JavaScript
         run: |
           set -euo pipefail
-          for file in rss/rss.js calculator/calculator.js clock/clock.js todo/todo.js; do
+          for file in rss/rss.js calculator/calculator.js clock/clock.js todo/todo.js resources/resources.js; do
             node --check "$file"
           done
       - name: Validate internal links
@@ -56,6 +56,13 @@ jobs:
           body="$(curl --retry 2 --retry-delay 2 --max-time 35 -fsS 'https://dcvtubivtextycifngtk.supabase.co/functions/v1/security-rss')"
           echo "$body" | jq -e '.ok == true and .retentionHours == 8 and (.sources | length >= 4) and (.items | type == "array")' >/dev/null
           echo "RSS backend OK: $(echo "$body" | jq '.items | length') active items"
+      - name: Smoke test resource feed
+        run: |
+          set -euo pipefail
+          key='sb_publishable_IcEN-3GgzcLCHiyNLyRiCQ_RpkAhCGI'
+          body="$(curl --retry 2 --retry-delay 2 --max-time 20 -fsS -H "apikey: $key" 'https://dcvtubivtextycifngtk.supabase.co/rest/v1/resource_usage_public?id=eq.1&select=database_bytes,storage_bytes,auth_users_30d,checked_at')"
+          echo "$body" | jq -e 'type == "array" and length == 1 and .[0].database_bytes >= 0 and .[0].storage_bytes >= 0 and .[0].checked_at != null' >/dev/null
+          echo "Resource feed OK"
       - name: Smoke test live Web Desk mirror
         run: |
           set -euo pipefail
@@ -65,6 +72,7 @@ jobs:
           curl --retry 2 --max-time 30 -fsSL "$base/calculator/" | grep -q 'Calculator'
           curl --retry 2 --max-time 30 -fsSL "$base/clock/" | grep -q 'Clock'
           curl --retry 2 --max-time 30 -fsSL "$base/todo/" | grep -q 'Todo'
+          curl --retry 2 --max-time 30 -fsSL "$base/resources/" | grep -q 'Free Tier Monitor'
           echo 'Live Web Desk mirror OK'
 
   deploy:
